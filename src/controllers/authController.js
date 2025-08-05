@@ -7,7 +7,7 @@ exports.signUpNewEmail = async (req, res) => {
   if (error) {
     return res.status(400).json({ error: error.stack });
   }
-  return res.status(200).json({ user: data });
+  return res.status(200).json({ user: data.user });
 }; 
 
 exports.signIn = async (req, res) => {
@@ -19,5 +19,5 @@ exports.signIn = async (req, res) => {
   if (error) {
     return res.status(400).json({ error: error.stack });
   }
-  return res.status(200).json({ session: data });
+  return res.status(200).json({ session: data.session });
 };
