@@ -1,4 +1,4 @@
-const { getRolByUserId } = require("../models/User");
+const { getRolByUserId } = require("../models/UserModel");
 
 const isAdmin = async (req, res, next) => {
   const user = req.user;
