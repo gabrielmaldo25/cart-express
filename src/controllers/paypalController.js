@@ -1,23 +1,31 @@
 const paypal = require("../configs/paypal");
 const { updateSaleStatus } = require("../models/SaleModel");
 exports.createPayment = (req, res, next) => {
+  const { items, total } = req.body;
+  const mappedItems = items.map((item) => ({
+    name: item.description,
+    sku: `SKU-${item.id_product}`,
+    price: item.sale_price.toString(),
+    currency: "USD",
+    quantity: item.quantity,
+  }));
   const create_payment_json = {
     intent: "sale",
     payer: {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: "http://return.url",
+      return_url: "http://localhost:5173/pago/success",
       cancel_url: "http://cancel.url",
     },
     transactions: [
       {
         item_list: {
-          items: req.body.items,
+          items: mappedItems,
         },
         amount: {
           currency: "USD",
-          total: req.body.total,
+          total,
         },
         description: "This is the payment structure with paypal",
       },
@@ -27,7 +35,8 @@ exports.createPayment = (req, res, next) => {
     if (error) {
       next(error);
     } else {
-      res.status(200).json({ payment });
+      const redirectUrl = payment.links.find(link=> link.rel === 'approval_url').href
+      res.status(200).json({ redirectUrl });
     }
   });
 };
